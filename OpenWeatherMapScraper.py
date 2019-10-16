@@ -3,9 +3,6 @@
 
 # ## Libraries
 
-# In[489]:
-
-
 import numpy as np
 import pandas as pd
 
@@ -28,13 +25,8 @@ from scipy.stats import zscore
 
 # ### Scrape top-50 Cities from Wikipedia
 
-# In[2]:
-
-
 wiki_url = requests.get('https://en.wikipedia.org/wiki/List_of_cities_in_India_by_population').text
 
-
-# In[314]:
 
 
 def wiki_scraper(url):
@@ -58,21 +50,12 @@ def wiki_scraper(url):
     return city_state
 
 
-# In[318]:
-
-
 city_state_list = wiki_scraper(url=wiki_url)
 
 
 # ### Data cleaning
 
-# In[321]:
-
-
 list_city = city_state_list[0::2][0:50] ## Top 50 cities, ignoring states.
-
-
-# In[322]:
 
 
 def clean(w):
@@ -87,9 +70,6 @@ def clean(w):
         w = w
     return w.lower()
 list_city = list(map(clean, list_city[0:50]))
-
-
-# In[324]:
 
 
 def clean2(s):
@@ -131,15 +111,11 @@ final_city_list =  list(map(clean2, list_city))
 
 # #### API Key
 
-# In[51]:
-
-
 # API Key = '<Create an API KEY>'
 
 
 # ### Scraping
 
-# In[375]:
 
 
 ### Dataset for storing City Info
@@ -148,9 +124,6 @@ city_dataset= pd.DataFrame(columns=['id', 'name', 'country', 'timezone', 'sunris
 
 ### Main Dataset of Weather info
 merged_dataset = pd.DataFrame(columns=['temp', 'temp_min', 'temp_max', 'pressure', 'sea_level', 'grnd_level',                                        'humidity', 'wind_speed', 'wind_deg', 'main', 'description', 'Country',                                        'Latitude', 'Longitude', 'date', 'time', 'City', 'temp_avg'])
-
-
-# In[376]:
 
 
 base_url="http://api.openweathermap.org/data/2.5/forecast?"
@@ -213,17 +186,11 @@ print("Data Retrieval Complete")
 print("-"*40)
 
 
-# In[435]:
-
-
 # conversion of categorical to Numeric
 merged_dataset['humidity'] = merged_dataset['humidity'].apply(pd.to_numeric)
 
 
 # ## Saving Data
-
-# In[436]:
-
 
 # Saving Data in a serialized format
 merged_dataset.to_pickle('City_wise_5d_3h_forecast.pkl')
@@ -235,17 +202,12 @@ city_dataset.to_pickle('City_Info.pkl')
 
 # ### City wise Average Temperature - 3 Hour window
 
-# In[396]:
-
-
 ### Data Aggregation on a 'City' and 'Time' level
 city_temp = pd.DataFrame(merged_dataset.groupby(['City', 'time'], as_index=False)                         ['temp_avg'].agg(lambda x:                                           np.mean(tuple(np.round(x,                                                         decimals=2).tolist()))))
 
 # Converting 'Time' column to date-time format
 city_temp['time'] = pd.to_datetime(city_temp['time'])
 
-
-# In[426]:
 
 
 city_list = list(city_temp.City.unique())
@@ -292,8 +254,6 @@ sns.pairplot(mor_af_ni_data, diag_kind='kde', hue = 'time' )
 
 # ### Correlation Plot
 
-# In[458]:
-
 
 merged_dataset.main.unique()
 
@@ -336,7 +296,6 @@ def plot(col, category):
 
 # ### avg_temp VS humidity
 
-# In[483]:
 
 
 plot(col='humidity', category='main')
@@ -347,8 +306,6 @@ plot(col='humidity', category='main')
 # - Temperature distribution remains inaffected by Sky conditions.
 
 # ### avg_temp VS Pressure
-
-# In[484]:
 
 
 plot(col='pressure',category='main')
@@ -386,8 +343,6 @@ plot(col='wind_deg', category='main')
 
 # ### Data pre-Processing
 
-# In[514]:
-
 
 X = merged_dataset[['pressure', 'sea_level', 'grnd_level', 'humidity', 'wind_speed', 'wind_deg', 'main',                   'Latitude', 'Longitude','time']]
 
@@ -412,7 +367,6 @@ X_standard = X_dummy.apply(zscore)
 
 # ### Linear Regression
 
-# In[517]:
 
 
 ## Linear Regression
