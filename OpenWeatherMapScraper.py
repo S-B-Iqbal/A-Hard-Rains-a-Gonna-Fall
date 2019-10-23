@@ -228,8 +228,6 @@ for city in city_list:
 
 # ### Univariate Analysis
 
-# In[442]:
-
 
 merged_dataset.describe().T
 
@@ -257,10 +255,6 @@ sns.pairplot(mor_af_ni_data, diag_kind='kde', hue = 'time' )
 
 merged_dataset.main.unique()
 
-
-# In[457]:
-
-
 corr = merged_dataset[['temp_min', 'temp_max', 'pressure', 'sea_level', 'grnd_level',                      'humidity', 'wind_speed', 'wind_deg','Latitude', 'Longitude','temp_avg']].corr()
 
 mask = np.zeros_like(corr, dtype=np.bool)
@@ -284,8 +278,6 @@ sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
 # - Pressure/Sea-Level are negatively correlated with Longitude.
 
 # ### Average Temperature Plots
-
-# In[481]:
 
 
 def plot(col, category):
@@ -349,9 +341,6 @@ X = merged_dataset[['pressure', 'sea_level', 'grnd_level', 'humidity', 'wind_spe
 Y = merged_dataset.temp_min
 
 
-# In[515]:
-
-
 ## Dummification
 
 X_dummy = pd.get_dummies(data=X, drop_first=True)
@@ -372,9 +361,6 @@ X_standard = X_dummy.apply(zscore)
 ## Linear Regression
 
 model = sm.OLS(Y, X_standard).fit_regularized(L1_wt=1)  ### Applying LASSO Regularization for countering MultiCollinearity.
-
-
-# In[518]:
 
 
 results = pd.DataFrame(model.params, columns=['Coefficient'])
